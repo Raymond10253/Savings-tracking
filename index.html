@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Savings Goal Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+  <div class="max-w-xl mx-auto border border-slate 700 rounded-3xl p-6 text-center my-10 bg-slate-100 space-y-2">
+    <h1 class="font-bold">Savings Tracker</h1>
+
+    <div class="">
+      <h3 id="display-goal-name" class="font-medium text-slate-700/70">Goal: Not Set</h3>
+      <p><span id="display-saved">Ksh.0</span> / <span id="display-target">Ksh.0</span></p>
+      
+      <div class="max-w-full mx-auto border border-slate-700 rounded-2xl bg-white px-1">
+        <div class=" bg-blue-400 rounded-3xl" id="progress-bar">0%</div>
+      </div>
+    </div>
+
+    <form id="goal-form" class="space-y-2">
+      <div class="form-group">
+        <label for="goal-name" class="block font-medium text-slate-700/70">Savings Goal Name</label>
+        <input type="text" id="goal-name" placeholder="e.g., Emergency Fund, New Laptop" required class="w-full rounded-2xl p-3">
+      </div>
+      <div class="form-group">
+        <label for="target-amount" class="block font-medium text-slate-700/70">Target Amount (Ksh.)</label>
+        <input type="number" id="target-amount" min="1" placeholder="e.g., 1000" required class="w-full rounded-2xl p-3">
+      </div>
+      <button type="submit">Set / Update Goal</button>
+    </form>
+
+    <form id="deposit-form">
+      <div class="form-group">
+        <label for="deposit-amount" class="block font-medium text-slate-700/70">Add Savings (Ksh.)</label>
+        <input type="number" id="deposit-amount" min="1" step="any" placeholder="e.g., 50" required class="w-full rounded-2xl p-3">
+      </div>
+      <button type="submit" class="max-w-xl bg-blue-400/50 p-2 rounded-2xl my-3">Deposit Money</button>
+    </form>
+
+    <div class="history">
+      <h2>Deposit History</h2>
+      <ul class="text-blue-400" id="history-list">
+        
+      </ul>
+      <div class="actions">
+        <button id="reset-btn" class="w-full bg-green-500 p-1 my-1 rounded-3xl">Reset Tracker</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Elements
+    const goalForm = document.getElementById('goal-form');
+    const depositForm = document.getElementById('deposit-form');
+    const goalNameInput = document.getElementById('goal-name');
+    const targetAmountInput = document.getElementById('target-amount');
+    const depositAmountInput = document.getElementById('deposit-amount');
+    
+    const displayGoalName = document.getElementById('display-goal-name');
+    const displaySaved = document.getElementById('display-saved');
+    const displayTarget = document.getElementById('display-target');
+    const progressBar = document.getElementById('progress-bar');
+    const historyList = document.getElementById('history-list');
+    const resetBtn = document.getElementById('reset-btn');
+
+    // Initial State (Data retrieved from localStorage if available)
+    let state = JSON.parse(localStorage.getItem('savingsState')) || {
+      goalName: '',
+      targetAmount: 0,
+      currentSaved: 0,
+      history: []
+    };
+
+    // Update UI based on current state
+    function updateUI() {
+      // Goal display
+      displayGoalName.textContent = state.goalName ? `Goal: ${state.goalName}` : 'Goal: Not Set';
+      displaySaved.textContent = `Ksh.${state.currentSaved.toFixed(2)}`;
+      displayTarget.textContent = `Ksh.${state.targetAmount.toFixed(2)}`;
+
+      // Calculate progress percentage
+      let percentage = 0;
+      if (state.targetAmount > 0) {
+        percentage = Math.min((state.currentSaved / state.targetAmount) * 100, 100);
+      }
+
+      // Progress bar styling
+      progressBar.style.width = `${percentage}%`;
+      progressBar.textContent = `${percentage.toFixed(1)}%`;
+
+      // Update History List
+      historyList.innerHTML = '';
+      if (state.history.length === 0) {
+        historyList.innerHTML = '<li style="justify-content: center; color: #888;">No deposits made yet.</li>';
+      } else {
+        // Render in reverse to show newest first
+        [...state.history].reverse().forEach(record => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <span>${record.date}</span>
+            <span class="amount-added">+Ksh.${record.amount.toFixed(2)}</span>
+          `;
+          historyList.appendChild(li);
+        });
+      }
+
+      // Save state to localStorage
+      localStorage.setItem('savingsState', JSON.stringify(state));
+    }
+
+    // Handle Goal Setting Form Submit
+    goalForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = goalNameInput.value.trim();
+      const target = parseFloat(targetAmountInput.value);
+
+      if (name && target > 0) {
+        state.goalName = name;
+        state.targetAmount = target;
+        updateUI();
+        
+        goalNameInput.value = '';
+        targetAmountInput.value = '';
+      }
+    });
+
+    // Handle Deposit Form Submit
+    depositForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const amount = parseFloat(depositAmountInput.value);
+
+      if (amount > 0) {
+        if (state.targetAmount === 0) {
+          alert('Please set a savings goal and target amount first!');
+          return;
+        }
+
+        // Add amount to total
+        state.currentSaved += amount;
+
+        // Add transaction entry
+        const record = {
+          amount: amount,
+          date: new Date().toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })
+        };
+        state.history.push(record);
+
+        // Reset input field and update display
+        depositAmountInput.value = '';
+        updateUI();
+      }
+    });
+
+    // Handle Reset Button
+    resetBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to reset all savings data and history?')) {
+        state = {
+          goalName: '',
+          targetAmount: 0,
+          currentSaved: 0,
+          history: []
+        };
+        localStorage.removeItem('savingsState');
+        updateUI();
+      }
+    });
+
+    // Initialize UI on load
+    updateUI();
+
+    
+  </script>
+</body>
+</html>

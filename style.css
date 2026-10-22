@@ -1,0 +1,157 @@
+:root{
+    --primary-color: #2ecc71;
+    --secondary-color: #27ae60;
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 500%;
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.goal-card {
+    background: #e8f8f5;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.goal-card h3 {
+    font-size: 1.1rem;
+    color: #16a085;
+    margin-bottom: 5px;
+}
+
+.goal-card p {
+    font-size: 1.5rem;
+    font-weight: bold;
+
+}
+
+.progress-container {
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    height: 25px;
+    width: 100%;
+    margin: 15px 0;
+    overflow: hidden;
+
+}
+
+.progress-bar{
+    background-color: var(--primary-color);
+    height: 100%;
+    width: 0%;
+    border-radius: 20px;
+    transition: width 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.85rem;
+    padding: 3px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+label{
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+
+}
+
+button:hover{
+    background-color: var(--secondary-color);
+}
+
+button.btn-secondary {
+    background-color: var(--secondary-color);
+}
+
+button.btn-secondary:hover {
+    background-color: #95a5a6;
+}
+
+.history {
+    margin-top: 20px;
+}
+
+.history-list {
+    list-style-type: none;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.history-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+}
+
+.history-list li:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.amount-added {
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
