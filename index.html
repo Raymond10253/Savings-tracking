@@ -8,14 +8,14 @@
 </head>
 <body>
 
-  <div class="max-w-xl mx-auto border border-slate 700 rounded-3xl p-6 text-center my-10 bg-slate-100 space-y-2">
+  <div class="max-w-xl mx-auto border border-slate-700 rounded-3xl p-6 text-center mt-5 bg-slate-100 space-y-2 z-50 shadow shadow-2xl">
     <h1 class="font-bold">Savings Tracker</h1>
 
     <div class="">
       <h3 id="display-goal-name" class="font-medium text-slate-700/70">Goal: Not Set</h3>
       <p><span id="display-saved">Ksh.0</span> / <span id="display-target">Ksh.0</span></p>
       
-      <div class="max-w-full mx-auto border border-slate-700 rounded-2xl bg-white px-1">
+      <div class="max-w-full mx-auto border border-slate-700 rounded-2xl bg-white">
         <div class=" bg-blue-400 rounded-3xl" id="progress-bar">0%</div>
       </div>
     </div>
@@ -52,7 +52,7 @@
   </div>
 
   <script>
-    // Elements
+    
     const goalForm = document.getElementById('goal-form');
     const depositForm = document.getElementById('deposit-form');
     const goalNameInput = document.getElementById('goal-name');
@@ -66,7 +66,7 @@
     const historyList = document.getElementById('history-list');
     const resetBtn = document.getElementById('reset-btn');
 
-    // Initial State (Data retrieved from localStorage if available)
+    
     let state = JSON.parse(localStorage.getItem('savingsState')) || {
       goalName: '',
       targetAmount: 0,
